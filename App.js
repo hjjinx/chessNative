@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -14,6 +6,8 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
+  TextInput,
 } from 'react-native';
 
 import {
@@ -24,53 +18,91 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import GameScreen from './GameScreen.js';
+
+class MainScreen extends React.Component {
+  state = {
+    roomID: '',
+    description: '',
+    password: '',
+  };
+
+  createRoom = () => {};
+
+  render() {
+    return (
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: 'rgb(50,50,50)',
+          paddingTop: 100,
+          height: '100%',
+        }}>
+        <Text style={{color: 'white', fontSize: 50}}>C H E S S</Text>
+        <View style={{marginTop: 80, backgroundColor: 'white', width: '80%'}}>
+          <TextInput
+            placeholder="Room ID.."
+            textAlign={'center'}
+            style={{
+              height: 40,
+              borderColor: 'gray',
+              borderWidth: 1,
+            }}
+            onChangeText={text => this.setState({roomID: text})}></TextInput>
+          <Button
+            title="Join Room"
+            onPress={() =>
+              this.props.navigation.navigate('Game', {
+                roomID: this.state.roomID,
+              })
+            }></Button>
+        </View>
+        <View style={{marginTop: 50, backgroundColor: 'white', width: '80%'}}>
+          <TextInput
+            placeholder="Room Description.."
+            textAlign={'center'}
+            style={{
+              height: 40,
+              borderColor: 'gray',
+              borderWidth: 1,
+            }}
+            onChangeText={text =>
+              this.setState({description: text})
+            }></TextInput>
+          <TextInput
+            placeholder="Password.."
+            textAlign={'center'}
+            style={{
+              height: 40,
+              borderColor: 'gray',
+              borderWidth: 1,
+            }}
+            onChangeText={text => this.setState({password: text})}></TextInput>
+          <Button title="Create Room" onPress={this.createRoom}></Button>
+        </View>
+      </View>
+    );
+  }
+}
+
+const AppNavigator = createStackNavigator({
+  Main: {
+    screen: MainScreen,
+    navigationOptions: {
+      title: 'Main',
+      header: null,
+    },
+  },
+  Game: {
+    screen: GameScreen,
+    navigationOptions: {
+      title: 'Game',
+      header: null,
+    },
+  },
+});
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -111,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default createAppContainer(AppNavigator);
