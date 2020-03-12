@@ -7,25 +7,15 @@ import {
 
 export default class Box extends React.Component {
   render() {
-    let classes = [Styles.box];
-    const boxId = this.props.boxId.split('');
-    const i = parseInt(boxId[0]);
-    const j = parseInt(boxId[1]);
-    if ((i + j) % 2 === 0) {
-      classes.push(Styles.white);
-    } else classes.push(Styles.black);
-
-    let unitClass = '';
-    const value = this.props.units[i][j];
-    if (value !== null) {
-      unitClass += value.split('_')[0]; //Color can be "B" or "W".
-      unitClass += value.split('_')[1]; // unit is Bishop or Pawn or Queen..
-    }
-    console.log('Unit classes are: ');
-    console.log(unitClass);
-    classes.push(unitClass);
-    // const unit = require(`./gfx/${unitClass}.png`);
-    return <View style={classes}>{/* <Image source={unit}></Image> */}</View>;
+    return (
+      <View style={this.props.classes}>
+        {
+          <Image
+            style={{flex: 1, width: undefined, height: undefined}}
+            source={this.props.unitImage}></Image>
+        }
+      </View>
+    );
   }
 }
 

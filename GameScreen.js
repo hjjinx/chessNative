@@ -77,7 +77,7 @@ export default class GameScreen extends React.Component {
           currTurn={this.state.currTurn}
           key="Grid"
           // handleSelect={this.handleSelect}
-          // highlighted={this.state.highlighted}
+          highlighted={this.state.highlighted}
           // moveUnit={this.moveUnit}
           // ownColor={this.state.ownColor}
           // boxSelected={this.state.boxSelected}
