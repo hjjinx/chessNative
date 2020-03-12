@@ -142,8 +142,7 @@ const AppNavigator = createStackNavigator({
       <GameScreen socket={socket} {...screenProps}></GameScreen>
     ),
     navigationOptions: {
-      title: 'Game',
-      header: null,
+      title: 'Game on',
     },
   },
 });

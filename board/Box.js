@@ -8,7 +8,9 @@ import {
 export default class Box extends React.Component {
   render() {
     return (
-      <View style={this.props.classes}>
+      <View
+        style={this.props.classes}
+        onStartShouldSetResponder={this.props.onPress}>
         {
           <Image
             style={{flex: 1, width: undefined, height: undefined}}
@@ -18,24 +20,3 @@ export default class Box extends React.Component {
     );
   }
 }
-
-const Styles = StyleSheet.create({
-  box: {
-    width: 30,
-    height: 30,
-  },
-  white: {
-    width: '12.5%',
-    height: wp('12.5%'),
-    backgroundColor: 'white',
-  },
-  black: {
-    width: '12.5%',
-    height: wp('12.5%'),
-    backgroundColor: 'black',
-  },
-  // W_Knight: {
-  //   backgroundImage: require('./gfx/WKnight.png'),
-  //   // backgroundSize: 100% 100%;
-  // },
-});

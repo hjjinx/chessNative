@@ -1,12 +1,38 @@
 import React, {Component} from 'react';
 import Box from './Box.js';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 export default class Grid extends Component {
+  handleClick = (i, j) => {
+    console.log('Handlingclick');
+    const currTurn = this.props.currTurn;
+    const {ownColor} = this.props;
+    if (currTurn != this.props.ownColor) return;
+
+    const unitAtPosition = this.props.units[i][j];
+    const isHighlighted = this.props.highlighted;
+    const boxSelected = this.props.boxSelected;
+    // If the box recently selected is a position that a currently selected unit can move to, then move.
+    if (isHighlighted[i][j] === true) {
+      this.props.moveUnit(i, j);
+      this.props.socket.emit('move', {
+        prevX: boxSelected[1][0],
+        prevY: boxSelected[1][1],
+        x: i,
+        y: j,
+        roomID: this.props.roomID,
+      });
+    } else if (
+      unitAtPosition !== null && // If a unit is present at the selected position
+      unitAtPosition.split('_')[0] == ownColor // If the color of the unit selected is the same of the player
+    )
+      this.props.handleSelect(i, j);
+  };
+
   render() {
     let unitPng = {};
     unitPng.WBishop = require('./gfx/WBishop.png');
@@ -34,8 +60,10 @@ export default class Grid extends Component {
 
         let unitImageClass = '';
         const value = this.props.units[i][j];
+        let color;
         if (value !== null) {
-          unitImageClass += value.split('_')[0]; //Color can be "B" or "W".
+          color = value.split('_')[0];
+          unitImageClass += color; //Color can be "B" or "W".
           unitImageClass += value.split('_')[1]; // unit is Bishop or Pawn or Queen..
         }
 
@@ -43,24 +71,21 @@ export default class Grid extends Component {
           // Checking if the box to be highlighted is friend or foe.
           const currTurn = this.props.currTurn;
           if (color === 'W' && currTurn === 'B')
-            classes += Styles.push(highlightedKill);
+            classes.push(Styles.highlightedKill);
           else if (color === 'B' && currTurn === 'W')
-            classes += Styles.push(highlightedKill);
-          else classes += Styles.push(highlighted);
+            classes.push(Styles.highlightedKill);
+          else classes.push(Styles.highlighted);
           // If current turn matches the color of unit, it is friend.
         }
 
         boxArr[i].push(
           <Box
+            onPress={() => this.handleClick(i, j)}
             classes={classes}
             unitImage={unitPng[unitImageClass]}
-            // units={this.props.units}
             currTurn={this.props.currTurn}
             key={i + '' + j}
-            // boxId={boxId}
-            // image={}
-            // handleSelect={this.props.handleSelect}
-            // highlighted={this.props.highlighted}
+            handleSelect={this.props.handleSelect}
             // moveUnit={this.props.moveUnit}
             // ownColor={this.props.ownColor}
             // boxSelected={this.props.boxSelected}
@@ -71,8 +96,32 @@ export default class Grid extends Component {
       }
     }
     return (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        {boxArr}
+      <View style={{flex: 1}}>
+        <ScrollView>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginTop: 100,
+            }}>
+            {boxArr}
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            width: '100%',
+            height: '4%',
+            backgroundColor: 'black',
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              textAlign: 'center',
+            }}>
+            Room ID: {this.props.roomID}
+          </Text>
+        </View>
       </View>
     );
   }
